@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IPL Live 2025 - Multi-Language Streams</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./favicon.ico">
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0
+            }
+
+            body {
+                font-family: 'Poppins',sans-serif;
+                background: #000;
+                color: #fff;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh
+            }
+
+            .header {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                background: rgba(255,255,255,0.1);
+                padding: 12px 0;
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: #fff;
+                text-shadow: 0 0 10px rgba(255,255,255,0.8);
+                box-shadow: 0 4px 10px rgba(255,255,255,0.2);
+                z-index: 100;
+                backdrop-filter: blur(8px)
+            }
+
+            .tab-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                gap: 10px;
+                margin-top: 80px;
+                width: 90%;
+                max-width: 800px
+            }
+
+            .tab {
+                padding: 10px 20px;
+                font-size: 1.2rem;
+                font-weight: 700;
+                cursor: pointer;
+                border: 2px solid #fff;
+                border-radius: 8px;
+                background: rgba(255,255,255,0.1);
+                transition: .3s;
+                text-align: center
+            }
+
+            .tab.active {
+                background: #ff4081;
+                color: #fff;
+                box-shadow: 0 0 15px rgba(255,64,129,1)
+            }
+
+            .social-buttons {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 15px;
+                margin: 15px 0
+            }
+
+            .insta-button,.x-button {
+                display: flex;
+                align-items: center;
+                padding: 6px 12px;
+                border-radius: 25px;
+                font-size: .9rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: all .3s ease;
+                box-shadow: 0 0 8px rgba(0,0,0,0.3);
+                text-decoration: none;
+                color: #fff
+            }
+
+            .insta-button {
+                background: linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)
+            }
+
+            .x-button {
+                background: linear-gradient(45deg,#1DA1F2 0%,#14171A 50%,#657786 100%)
+            }
+
+            .insta-button:hover,.x-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+                color: #fff
+            }
+
+            .insta-button i,.x-button i {
+                margin-right: 6px;
+                font-size: 1rem
+            }
+
+            .stream-container {
+                display: none;
+                margin-top: 20px;
+                width: 90%;
+                max-width: 900px;
+                position: relative
+            }
+
+            .stream-container.active {
+                display: block
+            }
+
+            .iframe-wrapper {
+                position: relative;
+                width: 100%;
+                height: 520px;
+                border-radius: 12px;
+                overflow: hidden;
+                background: #000;
+                border: 2px solid rgba(255,255,255,0.5);
+                box-shadow: 0 0 12px rgba(255,255,255,0.5)
+            }
+
+            iframe,video {
+                width: 100%;
+                height: 100%;
+                border: none;
+                background: #000;
+                display: block
+            }
+
+            .click-shield {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 5;
+                display: none;
+                background-color: transparent
+            }
+
+            .loading {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                z-index: 6;
+                background: rgba(0,0,0,0.7);
+                padding: 15px 25px;
+                border-radius: 8px;
+                font-size: 1.2rem;
+                display: none
+            }
+
+            .banner {
+                margin-bottom: 10px;
+                background: rgba(255,0,0,0.7);
+                padding: 5px;
+                border-radius: 5px
+            }
+
+            .banner marquee {
+                color: #fff;
+                font-size: 1rem;
+                font-weight: 500
+            }
+
+            .footer {
+                margin-top: 20px;
+                font-size: 1rem;
+                font-weight: 500
+            }
+
+            .footer a {
+                color: #fff;
+                text-decoration: none;
+                font-weight: 700;
+                transition: .3s
+            }
+
+            .footer a:hover {
+                color: #ff4081;
+                text-shadow: 0 0 15px rgba(255,64,129,1)
+            }
+
+            @media (max-width: 992px) {
+                .tab-container {
+                    grid-template-columns:1fr 1fr;
+                    grid-template-rows: repeat(3,1fr)
+                }
+            }
+
+            @media (max-width: 768px) {
+                .header {
+                    font-size:1.5rem
+                }
+
+                .iframe-wrapper {
+                    height: 300px
+                }
+
+                .social-buttons {
+                    flex-direction: column;
+                    gap: 10px
+                }
+            }
+
+            @media (max-width: 480px) {
+                .tab-container {
+                    width:95%;
+                    grid-template-columns: 1fr;
+                    grid-template-rows: repeat(6,1fr)
+                }
+
+                .tab {
+                    font-size: 1rem;
+                    padding: 8px 15px
+                }
+
+                .iframe-wrapper {
+                    height: 200px;
+                    max-width: 100%
+                }
+
+                .loading {
+                    font-size: 1rem;
+                    padding: 10px 15px
+                }
+
+                .banner marquee {
+                    font-size: .9rem
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">IPL Live 2025</div>
+        <div class="tab-container">
+            <div id="hindi-tab" class="tab active">📺 Hindi Stream</div>
+            <div id="english-tab" class="tab">📺 English Stream</div>
+            <div id="tamil-tab" class="tab">📺 Tamil Stream</div>
+            <div id="telugu-tab" class="tab">📺 Telugu Stream</div>
+            <div id="sp1-tab" class="tab">📺 Star Sports 1</div>
+            <div id="sp2-tab" class="tab">📺 Star Sports 2</div>
+        </div>
+        <div class="social-buttons">
+            <a href="https://www.instagram.com/rakesh_pal_official?igsh=NHZjeHd1OWxnNnZx" target="_blank" class="insta-button">
+                <i class="fab fa-instagram"></i>
+                Follow @rakeshpal_official
+            </a>
+            <a href="https://youtube.com/@rakeshpal_bp?si=K7dAcmc3Vysdbm7R" target="_blank" class="x-button">
+                <i class="fab fa-x-twitter"></i>
+                Follow @rakeshpal_official
+            </a>
+        </div>
+        <div id="hindi-stream" class="stream-container active">
+            <div class="banner">
+                <marquee>
+                    <strong>If stream not playing, use any VPN and connect to a USA server</strong>
+                    | <strong>Double Click On Video To Make Full Screen</strong>
+                    | <strong>Use Brave Browser</strong>
+                </marquee>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading" id="hindi-loading">Loading stream...</div>
+                <div class="click-shield" id="hindi-shield"></div>
+                <iframe id="hindi-iframe" sandbox="allow-scripts allow-same-origin" allowfullscreen src="" scrolling="no"></iframe>
+            </div>
+        </div>
+        <div id="english-stream" class="stream-container">
+            <div class="banner" id="english-banner" style="display:none">
+                <marquee>
+                    <strong>If stream not playing, use any VPN and connect to a USA server</strong>
+                    | <strong>Double Click On Video To Make Full Screen</strong>
+                    | <strong>Use Brave Browser</strong>
+                </marquee>
+            </div>
+            <div class="">
+                <video id="video" controls playsinline></video>
+            </div>
+        </div>
+        <div id="tamil-stream" class="stream-container">
+            <div class="banner">
+                <marquee>
+                    <strong>If stream not playing, use any VPN and connect to a USA server</strong>
+                    | <strong>Double Click On Video To Make Full Screen</strong>
+                    | <strong>Use Brave Browser</strong>
+                </marquee>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading" id="tamil-loading">Loading stream...</div>
+                <div class="click-shield" id="tamil-shield"></div>
+                <iframe id="tamil-iframe" sandbox="allow-scripts allow-same-origin" allowfullscreen src="" scrolling="no"></iframe>
+            </div>
+        </div>
+        <div id="telugu-stream" class="stream-container">
+            <div class="banner">
+                <marquee>
+                    <strong>If stream not playing, use any VPN and connect to a USA server</strong>
+                    | <strong>Double Click On Video To Make Full Screen</strong>
+                    | <strong>Use Brave Browser</strong>
+                </marquee>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading" id="telugu-loading">Loading stream...</div>
+                <div class="click-shield" id="telugu-shield"></div>
+                <iframe id="telugu-iframe" sandbox="allow-scripts allow-same-origin" allowfullscreen src="" scrolling="no"></iframe>
+            </div>
+        </div>
+        <div id="sp1-stream" class="stream-container">
+            <div class="banner">
+                <marquee>
+                    <strong>If stream not playing, use any VPN and connect to a USA server</strong>
+                    | <strong>Double Click On Video To Make Full Screen</strong>
+                    | <strong>Use Brave Browser</strong>
+                </marquee>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading" id="sp1-loading">Loading stream...</div>
+                <div class="click-shield" id="sp1-shield"></div>
+                <iframe id="sp1-iframe" sandbox="allow-scripts allow-same-origin" allowfullscreen src="" scrolling="no"></iframe>
+            </div>
+        </div>
+        <div id="sp2-stream" class="stream-container">
+            <div class="banner">
+                <marquee>
+                    <strong>If stream not playing, use any VPN and connect to a USA server</strong>
+                    | <strong>Double Click On Video To Make Full Screen</strong>
+                    | <strong>Use Brave Browser</strong>
+                </marquee>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading" id="sp2-loading">Loading stream...</div>
+                <div class="click-shield" id="sp2-shield"></div>
+                <iframe id="sp2-iframe" sandbox="allow-scripts allow-same-origin" allowfullscreen src="" scrolling="no"></iframe>
+            </div>
+        </div>
+        <div class="footer">
+            Made with ❤️ by <a href="https://github.com/SoumyaEXE" target="_blank">Soumya</a>
+        </div>
+        <script>
+            const _t = document.querySelectorAll(".tab");
+            const _s = document.querySelectorAll(".stream-container");
+            const _v = document.getElementById("video");
+            const _f = document.querySelector(".footer");
+            const _src = {
+                "hindi-iframe": "https://cdn.crichdplays.ru/embed2.php?id=starsp3",
+                "tamil-iframe": "https://cdn.crichdplays.ru/embed2.php?id=starsp1tam",
+                "telugu-iframe": "https://cdn.crichdplays.ru/embed2.php?id=starsp1tel",
+                "sp1-iframe": "https://cdn.crichdplays.ru/embed2.php?id=starsp1",
+                "sp2-iframe": "https://cdn.crichdplays.ru/embed2.php?id=starsp2"
+            };
+            const _ist = 6000;
+            const _pst = 10000;
+            const _sd = 1000;
+            function _stp() {
+                if (!_f.textContent.includes("Soumya"))
+                    return;
+                if (_v)
+                    _v.pause();
+                for (const [id] of Object.entries(_src)) {
+                    const i = document.getElementById(id);
+                    if (i && _f.textContent.includes("Soumya")) {
+                        i.src = "";
+                        const l = id.replace("iframe", "loading");
+                        const s = id.replace("iframe", "shield");
+                        const le = document.getElementById(l);
+                        const se = document.getElementById(s);
+                        if (le)
+                            le.style.display = "none";
+                        if (se)
+                            se.style.display = "none";
+                    }
+                }
+            }
+            function _ld(id, src) {
+                if (!_f || !_f.textContent.includes("Soumya"))
+                    return;
+                const i = document.getElementById(id);
+                const l = id.replace("iframe", "loading");
+                const s = id.replace("iframe", "shield");
+                const le = document.getElementById(l);
+                const se = document.getElementById(s);
+                if (!i || !le || !se)
+                    return;
+                le.style.display = "block";
+                i.src = src;
+                setTimeout( () => {
+                    if (!_f.textContent.includes("Soumya"))
+                        return;
+                    le.style.display = "none";
+                    se.style.display = "block";
+                    setTimeout( () => {
+                        if (!_f.textContent.includes("Soumya"))
+                            return;
+                        se.style.display = "none";
+                        setInterval( () => {
+                            if (!_f.textContent.includes("Soumya"))
+                                return;
+                            se.style.display = "block";
+                            setTimeout( () => {
+                                se.style.display = "none"
+                            }
+                            , _sd)
+                        }
+                        , _pst)
+                    }
+                    , _ist)
+                }
+                , 2000);
+                i.onload = function() {
+                    try {
+                        const iw = i.contentWindow;
+                        if (iw && _f.textContent.includes("Soumya")) {
+                            iw.open = function() {
+                                return null
+                            }
+                            ;
+                            iw.location.href = src
+                        }
+                    } catch (e) {
+                        console.log("err")
+                    }
+                }
+            }
+            _t.forEach(t => {
+                t.addEventListener("click", () => {
+                    if (!_f || !_f.textContent.includes("Soumya"))
+                        return;
+                    _t.forEach(x => x.classList.remove("active"));
+                    _s.forEach(x => x.classList.remove("active"));
+                    _stp();
+                    t.classList.add("active");
+                    const a = document.getElementById(t.id.replace("-tab", "-stream"));
+                    a.classList.add("active");
+                    if (t.id === "english-tab") {
+                        setTimeout( () => {
+                            if (_v && _f.textContent.includes("Soumya"))
+                                _v.play().catch(e => console.log("err"))
+                        }
+                        , 100)
+                    } else {
+                        const iid = t.id.replace("-tab", "-iframe");
+                        if (_src[iid] && _f.textContent.includes("Soumya"))
+                            _ld(iid, _src[iid])
+                    }
+                }
+                )
+            }
+            );
+            document.addEventListener("DOMContentLoaded", () => {
+                if (!_f || !_f.textContent.includes("Soumya"))
+                    return;
+                const u = "https://live.tsports.com/mobile_hls/tsports_live_2/playlist.m3u8";
+                if (Hls.isSupported() && _f.textContent.includes("Soumya")) {
+                    const h = new Hls({
+                        maxBufferLength: 30,
+                        maxMaxBufferLength: 60
+                    });
+                    h.loadSource(u);
+                    h.attachMedia(_v);
+                    h.on(Hls.Events.MANIFEST_PARSED, () => {
+                        let hd = h.levels.findIndex(l => l.height >= 720);
+                        if (hd !== -1)
+                            h.currentLevel = hd;
+                        document.getElementById("english-banner").style.display = "none"
+                    }
+                    );
+                    h.on(Hls.Events.ERROR, (e, d) => {
+                        if (d.fatal)
+                            document.getElementById("english-banner").style.display = "block"
+                    }
+                    )
+                } else if (_v.canPlayType("application/vnd.apple.mpegurl") && _f.textContent.includes("Soumya")) {
+                    _v.src = u;
+                    _v.addEventListener("error", () => {
+                        document.getElementById("english-banner").style.display = "block"
+                    }
+                    );
+                    _v.addEventListener("canplay", () => {
+                        document.getElementById("english-banner").style.display = "none"
+                    }
+                    )
+                }
+                const at = document.querySelector(".tab.active");
+                if (at.id !== "english-tab") {
+                    const iid = at.id.replace("-tab", "-iframe");
+                    if (_src[iid] && _f.textContent.includes("Soumya"))
+                        _ld(iid, _src[iid])
+                }
+            }
+            );
+            window.addEventListener("beforeunload", function(e) {
+                const c = e.explicitOriginalTarget || document.activeElement;
+                if (c.tagName !== "A" && !e.currentTarget.contains(c)) {
+                    e.preventDefault();
+                    e.returnValue = "";
+                    return ""
+                }
+            })
+        </script>
+    </body>
+</html>
