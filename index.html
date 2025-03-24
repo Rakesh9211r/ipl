@@ -261,11 +261,11 @@
         <div class="social-buttons">
             <a href="https://www.instagram.com/rakesh_pal_official?igsh=NHZjeHd1OWxnNnZx" target="_blank" class="insta-button">
                 <i class="fab fa-instagram"></i>
-                Follow @rakeshpal_official
+                Follow @rakesh_pal_official
             </a>
             <a href="https://youtube.com/@rakeshpal_bp?si=K7dAcmc3Vysdbm7R" target="_blank" class="x-button">
                 <i class="fab fa-x-twitter"></i>
-                Follow @rakeshpal_official
+                Follow @rakeshpal_bp
             </a>
         </div>
         <div id="hindi-stream" class="stream-container active">
@@ -290,7 +290,7 @@
                     | <strong>Use Brave Browser</strong>
                 </marquee>
             </div>
-            <div class="">
+            <div class="iframe-wrapper">
                 <video id="video" controls playsinline></video>
             </div>
         </div>
@@ -351,7 +351,7 @@
             </div>
         </div>
         <div class="footer">
-            Made with ❤️ by <a href="https://github.com/Rakesh9211r" target="_blank">Rakesh Pal</a>
+            Made with ❤️ by <a href="https://github.com/Rakesh9211r" target="_blank">Rakesh</a>
         </div>
         <script>
             const _t = document.querySelectorAll(".tab");
@@ -369,13 +369,13 @@
             const _pst = 10000;
             const _sd = 1000;
             function _stp() {
-                if (!_f.textContent.includes("Soumya"))
+                if (!_f.textContent.includes("Rakesh"))
                     return;
                 if (_v)
                     _v.pause();
                 for (const [id] of Object.entries(_src)) {
                     const i = document.getElementById(id);
-                    if (i && _f.textContent.includes("Soumya")) {
+                    if (i && _f.textContent.includes("Rakesh")) {
                         i.src = "";
                         const l = id.replace("iframe", "loading");
                         const s = id.replace("iframe", "shield");
@@ -389,7 +389,7 @@
                 }
             }
             function _ld(id, src) {
-                if (!_f || !_f.textContent.includes("Soumya"))
+                if (!_f || !_f.textContent.includes("Rakesh"))
                     return;
                 const i = document.getElementById(id);
                 const l = id.replace("iframe", "loading");
@@ -401,16 +401,16 @@
                 le.style.display = "block";
                 i.src = src;
                 setTimeout( () => {
-                    if (!_f.textContent.includes("Soumya"))
+                    if (!_f.textContent.includes("Rakesh"))
                         return;
                     le.style.display = "none";
                     se.style.display = "block";
                     setTimeout( () => {
-                        if (!_f.textContent.includes("Soumya"))
+                        if (!_f.textContent.includes("Rakesh"))
                             return;
                         se.style.display = "none";
                         setInterval( () => {
-                            if (!_f.textContent.includes("Soumya"))
+                            if (!_f.textContent.includes("Rakesh"))
                                 return;
                             se.style.display = "block";
                             setTimeout( () => {
@@ -426,7 +426,7 @@
                 i.onload = function() {
                     try {
                         const iw = i.contentWindow;
-                        if (iw && _f.textContent.includes("Soumya")) {
+                        if (iw && _f.textContent.includes("Rakesh")) {
                             iw.open = function() {
                                 return null
                             }
@@ -440,7 +440,7 @@
             }
             _t.forEach(t => {
                 t.addEventListener("click", () => {
-                    if (!_f || !_f.textContent.includes("Soumya"))
+                    if (!_f || !_f.textContent.includes("Rakesh"))
                         return;
                     _t.forEach(x => x.classList.remove("active"));
                     _s.forEach(x => x.classList.remove("active"));
@@ -450,13 +450,13 @@
                     a.classList.add("active");
                     if (t.id === "english-tab") {
                         setTimeout( () => {
-                            if (_v && _f.textContent.includes("Soumya"))
+                            if (_v && _f.textContent.includes("Rakesh"))
                                 _v.play().catch(e => console.log("err"))
                         }
                         , 100)
                     } else {
                         const iid = t.id.replace("-tab", "-iframe");
-                        if (_src[iid] && _f.textContent.includes("Soumya"))
+                        if (_src[iid] && _f.textContent.includes("Rakesh"))
                             _ld(iid, _src[iid])
                     }
                 }
@@ -464,10 +464,10 @@
             }
             );
             document.addEventListener("DOMContentLoaded", () => {
-                if (!_f || !_f.textContent.includes("Soumya"))
+                if (!_f || !_f.textContent.includes("Rakesh"))
                     return;
                 const u = "https://live.tsports.com/mobile_hls/tsports_live_2/playlist.m3u8";
-                if (Hls.isSupported() && _f.textContent.includes("Soumya")) {
+                if (Hls.isSupported() && _f.textContent.includes("Rakesh")) {
                     const h = new Hls({
                         maxBufferLength: 30,
                         maxMaxBufferLength: 60
@@ -486,7 +486,7 @@
                             document.getElementById("english-banner").style.display = "block"
                     }
                     )
-                } else if (_v.canPlayType("application/vnd.apple.mpegurl") && _f.textContent.includes("Soumya")) {
+                } else if (_v.canPlayType("application/vnd.apple.mpegurl") && _f.textContent.includes("Rakesh")) {
                     _v.src = u;
                     _v.addEventListener("error", () => {
                         document.getElementById("english-banner").style.display = "block"
@@ -500,7 +500,7 @@
                 const at = document.querySelector(".tab.active");
                 if (at.id !== "english-tab") {
                     const iid = at.id.replace("-tab", "-iframe");
-                    if (_src[iid] && _f.textContent.includes("Soumya"))
+                    if (_src[iid] && _f.textContent.includes("Rakesh"))
                         _ld(iid, _src[iid])
                 }
             }
